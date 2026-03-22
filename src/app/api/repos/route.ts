@@ -24,29 +24,27 @@ export async function GET() {
       ORDER BY COUNT(*) DESC
     `);
 
-    if (repos.length > 0) {
-      const summaries = repos.map((r) => {
-        const total = parseInt(r.total_events);
-        const deploys = parseInt(r.deployments);
-        const incidents = parseInt(r.incidents);
-        const successful = parseInt(r.successful);
-        return {
-          repo: r.repo,
-          total_events: total,
-          deployments: deploys,
-          incidents,
-          success_rate: total > 0 ? +((successful / total) * 100).toFixed(1) : 0,
-          last_deploy: r.last_deploy,
-          dora: {
-            deployment_frequency: deploys > 0 ? +(deploys / 7).toFixed(1) : 0,
-            lead_time: +(2 + Math.random() * 10).toFixed(1),
-            change_failure_rate: deploys > 0 ? +((parseInt(r.incidents) / deploys) * 100).toFixed(1) : 0,
-            mttr: +(0.5 + Math.random() * 3).toFixed(1),
-          },
-        };
-      });
-      return NextResponse.json({ repos: summaries, source: 'database' });
-    }
+    const summaries = repos.map((r) => {
+      const total = parseInt(r.total_events);
+      const deploys = parseInt(r.deployments);
+      const incidents = parseInt(r.incidents);
+      const successful = parseInt(r.successful);
+      return {
+        repo: r.repo,
+        total_events: total,
+        deployments: deploys,
+        incidents,
+        success_rate: total > 0 ? +((successful / total) * 100).toFixed(1) : 0,
+        last_deploy: r.last_deploy,
+        dora: {
+          deployment_frequency: deploys > 0 ? +(deploys / 7).toFixed(1) : 0,
+          lead_time: +(2 + Math.random() * 10).toFixed(1),
+          change_failure_rate: deploys > 0 ? +((parseInt(r.incidents) / deploys) * 100).toFixed(1) : 0,
+          mttr: +(0.5 + Math.random() * 3).toFixed(1),
+        },
+      };
+    });
+    return NextResponse.json({ repos: summaries, source: 'database' });
   } catch {}
 
   // Fallback

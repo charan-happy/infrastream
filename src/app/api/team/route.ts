@@ -29,21 +29,19 @@ export async function GET() {
       ORDER BY COUNT(*) DESC
     `);
 
-    if (members.length > 0) {
-      const result = members.map((m) => ({
-        name: m.author,
-        avatar_url: m.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.author}`,
-        deployments: parseInt(m.deployments),
-        successful_deploys: parseInt(m.successful_deploys),
-        failed_deploys: parseInt(m.failed_deploys),
-        incidents_resolved: parseInt(m.incidents_resolved),
-        prs_merged: parseInt(m.prs_merged),
-        commits: parseInt(m.commits),
-        avg_lead_time: +(1 + Math.random() * 10).toFixed(1),
-        streak: 0,
-      }));
-      return NextResponse.json({ members: result, source: 'database' });
-    }
+    const result = members.map((m) => ({
+      name: m.author,
+      avatar_url: m.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.author}`,
+      deployments: parseInt(m.deployments),
+      successful_deploys: parseInt(m.successful_deploys),
+      failed_deploys: parseInt(m.failed_deploys),
+      incidents_resolved: parseInt(m.incidents_resolved),
+      prs_merged: parseInt(m.prs_merged),
+      commits: parseInt(m.commits),
+      avg_lead_time: +(1 + Math.random() * 10).toFixed(1),
+      streak: 0,
+    }));
+    return NextResponse.json({ members: result, source: 'database' });
   } catch {}
 
   return NextResponse.json({ members: generateTeamMembers(), source: 'demo' });

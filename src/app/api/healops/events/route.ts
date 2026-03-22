@@ -25,23 +25,21 @@ export async function GET(request: NextRequest) {
       processed_at: string | null; metadata: Record<string, unknown>;
     }>(sql, params);
 
-    if (rows.length > 0) {
-      const events = rows.map((r) => ({
-        id: r.id,
-        repo: r.repo,
-        type: (r.metadata?.healing_type as string) || 'security_fix',
-        status: r.status === 'success' ? 'healed' : r.status === 'failure' ? 'failed' : r.status === 'pending' ? 'detected' : 'healing',
-        title: r.title,
-        severity: r.severity,
-        detected_at: r.created_at,
-        healed_at: r.processed_at,
-        time_to_heal: r.processed_at ? Math.round((new Date(r.processed_at).getTime() - new Date(r.created_at).getTime()) / 60000) : null,
-        auto_fix: (r.metadata?.auto_fix as boolean) ?? true,
-        pr_number: (r.metadata?.pr_number as number) || null,
-        confidence: (r.metadata?.confidence as number) || 85,
-      }));
-      return NextResponse.json({ events, source: 'database' });
-    }
+    const events = rows.map((r) => ({
+      id: r.id,
+      repo: r.repo,
+      type: (r.metadata?.healing_type as string) || 'security_fix',
+      status: r.status === 'success' ? 'healed' : r.status === 'failure' ? 'failed' : r.status === 'pending' ? 'detected' : 'healing',
+      title: r.title,
+      severity: r.severity,
+      detected_at: r.created_at,
+      healed_at: r.processed_at,
+      time_to_heal: r.processed_at ? Math.round((new Date(r.processed_at).getTime() - new Date(r.created_at).getTime()) / 60000) : null,
+      auto_fix: (r.metadata?.auto_fix as boolean) ?? true,
+      pr_number: (r.metadata?.pr_number as number) || null,
+      confidence: (r.metadata?.confidence as number) || 85,
+    }));
+    return NextResponse.json({ events, source: 'database' });
   } catch {}
 
   let events = generateHealingEvents(50);

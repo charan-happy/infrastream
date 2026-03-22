@@ -45,11 +45,12 @@ export async function GET(request: NextRequest) {
 
     if (events.length > 0) {
       await cacheSet(cacheKey, events, 30);
-      return NextResponse.json({ events, source: 'database' });
     }
+    // Always return DB result when connected (even if empty)
+    return NextResponse.json({ events, source: 'database' });
   } catch {}
 
-  // Fallback to demo data
+  // Fallback to demo data only when DB is not connected
   let events = generateDemoEvents(limit + offset);
   if (type) events = events.filter((e) => e.type === type);
   if (repo) events = events.filter((e) => e.repo === repo);

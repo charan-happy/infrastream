@@ -24,49 +24,47 @@ export async function GET() {
     `);
 
     const total = parseInt(healopsEvents[0]?.total || '0');
-    if (total > 0) {
-      const healed = parseInt(healopsEvents[0]?.healed || '0');
-      const failed = parseInt(healopsEvents[0]?.failed || '0');
+    const healed = parseInt(healopsEvents[0]?.healed || '0');
+    const failed = parseInt(healopsEvents[0]?.failed || '0');
 
-      const stats = {
-        total_healings: total,
-        auto_fixed: healed,
-        manual_required: failed,
-        success_rate: +((healed / total) * 100).toFixed(1),
-        avg_time_to_heal: +(5 + Math.random() * 20).toFixed(1),
-        issues_prevented: Math.floor(healed * 0.6),
-        repos_monitored: repoStats.length,
-        health_score: Math.floor(70 + (healed / total) * 25),
+    const stats = {
+      total_healings: total,
+      auto_fixed: healed,
+      manual_required: failed,
+      success_rate: total > 0 ? +((healed / total) * 100).toFixed(1) : 0,
+      avg_time_to_heal: total > 0 ? +(5 + Math.random() * 20).toFixed(1) : 0,
+      issues_prevented: Math.floor(healed * 0.6),
+      repos_monitored: repoStats.length,
+      health_score: total > 0 ? Math.floor(70 + (healed / total) * 25) : 0,
+    };
+
+    const repo_health = repoStats.map((r) => {
+      const found = parseInt(r.total);
+      const fixed = parseInt(r.fixed);
+      return {
+        repo: r.repo,
+        health_score: Math.floor(60 + (fixed / Math.max(found, 1)) * 35),
+        issues_found: found,
+        issues_fixed: fixed,
+        auto_fix_rate: +((fixed / Math.max(found, 1)) * 100).toFixed(1),
+        last_scan: new Date().toISOString(),
+        categories: {
+          security: Math.floor(70 + Math.random() * 25),
+          dependencies: Math.floor(60 + Math.random() * 35),
+          code_quality: Math.floor(55 + Math.random() * 40),
+          configuration: Math.floor(65 + Math.random() * 30),
+          performance: Math.floor(50 + Math.random() * 45),
+        },
       };
+    });
 
-      const repo_health = repoStats.map((r) => {
-        const found = parseInt(r.total);
-        const fixed = parseInt(r.fixed);
-        return {
-          repo: r.repo,
-          health_score: Math.floor(60 + (fixed / Math.max(found, 1)) * 35),
-          issues_found: found,
-          issues_fixed: fixed,
-          auto_fix_rate: +((fixed / Math.max(found, 1)) * 100).toFixed(1),
-          last_scan: new Date().toISOString(),
-          categories: {
-            security: Math.floor(70 + Math.random() * 25),
-            dependencies: Math.floor(60 + Math.random() * 35),
-            code_quality: Math.floor(55 + Math.random() * 40),
-            configuration: Math.floor(65 + Math.random() * 30),
-            performance: Math.floor(50 + Math.random() * 45),
-          },
-        };
-      });
-
-      return NextResponse.json({
-        stats,
-        repo_health,
-        timeline: generateHealingTimeline(30),
-        dora_comparison: generateDORAComparison(),
-        source: 'database',
-      });
-    }
+    return NextResponse.json({
+      stats,
+      repo_health,
+      timeline: generateHealingTimeline(30),
+      dora_comparison: generateDORAComparison(),
+      source: 'database',
+    });
   } catch {}
 
   return NextResponse.json({
