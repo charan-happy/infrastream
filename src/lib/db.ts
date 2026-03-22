@@ -5,8 +5,10 @@ let pool: Pool | null = null;
 export function getPool(): Pool | null {
   if (!process.env.PG_CONNECTION_URI) return null;
   if (!pool) {
+    // Strip sslmode from connection string — pg library handles ssl via config
+    const uri = process.env.PG_CONNECTION_URI.replace(/[?&]sslmode=[^&]*/g, '');
     pool = new Pool({
-      connectionString: process.env.PG_CONNECTION_URI,
+      connectionString: uri.endsWith('?') ? uri.slice(0, -1) : uri,
       ssl: { rejectUnauthorized: false },
       max: 5,
     });
