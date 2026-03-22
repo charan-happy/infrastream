@@ -45,13 +45,13 @@ export function EventTimeline() {
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex gap-2">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
           {filters.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 filter === f
                   ? 'bg-emerald-600 text-white'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'

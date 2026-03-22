@@ -78,9 +78,9 @@ export function EventCard({ event }: { event: DevOpsEvent }) {
             {event.status}
           </span>
         </div>
-        <div className="mt-1 flex items-center gap-3 text-xs text-zinc-500">
-          <span className="font-mono">{event.repo}</span>
-          <span>{event.branch}</span>
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-zinc-500">
+          <span className="font-mono truncate max-w-[150px] sm:max-w-none">{event.repo}</span>
+          <span className="hidden sm:inline">{event.branch}</span>
           <span>{event.author}</span>
         </div>
       </div>

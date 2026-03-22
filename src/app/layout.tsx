@@ -30,13 +30,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-zinc-950 font-sans text-white antialiased`}
       >
         <Sidebar />
-        <div className="pl-64">
-          <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950/80 px-8 backdrop-blur">
+        <div className="lg:pl-64">
+          <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950/80 px-4 pl-14 lg:pl-8 lg:px-8 backdrop-blur">
             <div />
             <ServiceStatus />
           </header>
-          <main className="p-8">{children}</main>
-          <footer className="border-t border-zinc-800 px-8 py-4 text-center text-xs text-zinc-600">
+          <main className="p-4 lg:p-8">{children}</main>
+          <footer className="border-t border-zinc-800 px-4 lg:px-8 py-4 text-center text-xs text-zinc-600">
             Built with{' '}
             <span className="text-red-500">&#10084;</span>{' '}
             by{' '}
